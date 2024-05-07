@@ -43,6 +43,17 @@ list(APPEND DFN_SOURCES ${DFN_sources})
 list(APPEND DFN_HEADERS ${DFN_headers})
 list(APPEND DFN_INCLUDE ${DFN_includes})
 
+#
+add_subdirectory(src)
+list(APPEND DFN_SOURCES ${src_sources})
+list(APPEND DFN_HEADERS ${src_headers})
+list(APPEND DFN_INCLUDE ${src_includes})
+#
+
+# Add file
+###############################################################################
+
+
 # Create executable
 ################################################################################
 add_executable(${PROJECT_NAME}
