@@ -52,7 +52,7 @@ list(APPEND DFN_INCLUDE ${src_includes})
 
 # Add file
 ###############################################################################
-
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/DFN DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Create executable
 ################################################################################

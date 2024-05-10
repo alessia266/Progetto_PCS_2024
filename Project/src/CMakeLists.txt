@@ -1,4 +1,5 @@
-list(APPEND src_sources "${CMAKE_CURRENT_SOURCE_DIR}/DFN.cpp")
+list(APPEND src_sources "${CMAKE_CURRENT_SOURCE_DIR}/Utils.cpp")
+list(APPEND src_headers "${CMAKE_CURRENT_SOURCE_DIR}/Utils.hpp")
 list(APPEND src_headers "${CMAKE_CURRENT_SOURCE_DIR}/DFN.hpp")
 
 
