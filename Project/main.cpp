@@ -20,6 +20,8 @@ int main()
                      fracture))
         return 1;
 
+    if (!FilterFract(fracture))
+        return -1;
 
     return 0;
 }

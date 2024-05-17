@@ -65,16 +65,78 @@ bool ImportFract(const string& filename,
         istringstream convertZ(coord_z);
 
 
+        double minX = 10e5;
+        double maxX = 0;
+        double minY = 10e5;
+        double maxY = 0;
+        double minZ = 10e5;
+        double maxZ = 0;
+
         for (unsigned int j = 0; j < numVert; j++)
         {
             Vector3d coord;
             convertX >> coord[0];
+            //assegnazione minimo e massimo della variabile x
+            if (minX > coord[0])
+                minX = coord[0];
+            if (maxX < coord[0])
+                maxX = coord[0];
+
             convertY >> coord[1];
+            //assegnazione minimo e massimo della variabile y
+            if (minY > coord[1])
+                minY = coord[1];
+            if (maxY < coord[1])
+                maxY = coord[1];
+
             convertZ >> coord[2];
+            //assegnazione minimo e massimo della variabile z
+            if (minZ > coord[2])
+                minZ = coord[2];
+            if (maxZ < coord[2])
+                maxZ = coord[2];
+
             fracture.IDFracture[i].push_back(coord);
+
         }
+        fracture.MinFract[i] = {minX, minY, minZ};
+        fracture.MaxFract[i] = {maxX, maxY, maxZ};
     }
     return true;
+}
+
+bool FilterFract(Fractures& fracture)
+{
+    //tolerance
+    float e = 1.0;
+    while ((1+e) > 1.0)
+        e /= 2.0;
+
+    for(unsigned int fract1 = 0; fract1 < fracture.numberFractures; fract1++)
+    {
+        for(unsigned int fract2 = (fract1 + 1); fract2 < fracture.numberFractures; fract2++)
+        {
+            if (((fracture.MinFract[fract1][0] >= fracture.MinFract[fract2][0] - e
+                  && fracture.MinFract[fract1][0] <= fracture.MaxFract[fract2][0] + e)
+                 || (fracture.MinFract[fract2][0] >= fracture.MinFract[fract1][0] - e
+                  && fracture.MinFract[fract2][0] <= fracture.MaxFract[fract1][0] + e))
+                &&
+                ((fracture.MinFract[fract1][1] >= fracture.MinFract[fract2][1] - e
+                  && fracture.MinFract[fract1][1] <= fracture.MaxFract[fract2][1] + e)
+                 || (fracture.MinFract[fract2][1] >= fracture.MinFract[fract1][1] - e
+                  && fracture.MinFract[fract2][1] <= fracture.MaxFract[fract1][1] + e))
+                &&
+                ((fracture.MinFract[fract1][2] >= fracture.MinFract[fract2][2] - e
+                  && fracture.MinFract[fract1][2] <= fracture.MaxFract[fract2][2] + e)
+                 || (fracture.MinFract[fract2][2] >= fracture.MinFract[fract1][2] - e
+                     && fracture.MinFract[fract2][2] <= fracture.MaxFract[fract1][2] + e))
+                )
+            {
+                fracture.IDFracturesComparable.push_back({fract1, fract2}); //IDFractures to compare
+            }
+        }
+
+    }
 }
 
 }

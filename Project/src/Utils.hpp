@@ -9,4 +9,6 @@ namespace DFNLibrary{
 bool ImportFract(const string& filename,
                  Fractures& fracture);
 
+bool FilterFract(Fractures& fracture);
+
 }
