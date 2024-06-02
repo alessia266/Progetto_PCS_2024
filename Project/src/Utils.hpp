@@ -9,6 +9,10 @@ namespace DFNLibrary{
 bool ImportFract(const string& filename,
                  Fractures& fracture);
 
-bool FilterFract(Fractures& fracture);
+void FilterFract(Fractures& fracture);
+
+bool CalculateIntersection(Fractures& fracture,
+                           Traces& traces);
+
 
 }

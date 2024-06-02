@@ -15,13 +15,17 @@ int main()
     filename = "DFN/" + filename;
 
     Fractures fracture;
+    Traces trace;
 
     if (!ImportFract(filename,
                      fracture))
         return 1;
 
-    if (!FilterFract(fracture))
-        return -1;
+    FilterFract(fracture);
+
+    if (!CalculateIntersection(fracture,
+                               trace))
+        return 2;
 
     return 0;
 }

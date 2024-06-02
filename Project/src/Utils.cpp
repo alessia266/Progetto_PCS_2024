@@ -105,7 +105,7 @@ bool ImportFract(const string& filename,
     return true;
 }
 
-bool FilterFract(Fractures& fracture)
+void FilterFract(Fractures& fracture)
 {
     //tolerance
     float e = 1.0;
@@ -137,6 +137,94 @@ bool FilterFract(Fractures& fracture)
         }
 
     }
+}
+
+
+//intersection line between the planes containing each fracture, checks for parallelism between the planes,
+//solve a linear system to find the intersection point, and add it to the trace
+bool CalculateIntersection(Fractures& fracture, Traces& traces)
+{
+    //tolerance
+    float e = 1.0;
+    while ((1+e) > 1.0)
+        e /= 2.0;
+
+    for (unsigned int i = 0; i < size(fracture.IDFracturesComparable); i++)
+    {
+        unsigned int ID1 = fracture.IDFracturesComparable[i][0];
+        unsigned int ID2 = fracture.IDFracturesComparable[i][1];
+
+        vector<Vector3d>& fracture1 = fracture.IDFracture[ID1]; //fracture's coord
+        vector<Vector3d>& fracture2 = fracture.IDFracture[ID2]; //fracture's coord
+
+        //normal plane
+        Vector3d norm1 = {0, 0, 0};
+        Vector3d norm2 = {0, 0, 0};
+        Vector3d point1 = fracture1[1];
+        Vector3d point2 = fracture2[1];
+
+        unsigned int k = 2;
+        while (norm1.norm() < e && k < size(fracture1))
+        {
+            norm1 = (fracture1[1] - fracture1[0]).cross(fracture1[k] - fracture1[0]); //vector product
+            k++;
+        }
+        if (k == size(fracture1))
+        {
+            cout << "Fracture " << ID1 << " is degenerate";
+            return false;
+        }
+
+        k = 2;
+        while (norm2.norm() < e && k < size(fracture2))
+        {
+            norm2 = (fracture2[1] - fracture2[0]).cross(fracture2[k] - fracture2[0]); //vector product
+            k++;
+        }
+        if (k == size(fracture2))
+        {
+            cout << "Fracture " << ID2 << " is degenerate";
+            return false;
+        }
+
+        cout << "Norm1: " << norm1 << endl;
+        cout << "Norm2: " << norm2 << endl;
+
+        //direction of the intersection line between the two plane
+        Vector3d t = norm1.cross(norm2);
+
+        cout <<  "Direction: " << t << endl;
+
+        //check parallel planes
+        if(t.norm() < e)
+        {
+            cout << "The planes are parallel" << endl;
+            return false; //no intersection
+        }
+
+        //linear system
+        Matrix3d A;
+        Vector3d b;
+        A << norm1[0], norm1[1], norm1[2],
+            norm2[0], norm2[1], norm2[2],
+            t[0], t[1], t[2];
+        b << norm1.dot(point1), norm2.dot(point2), 0;
+
+        if(A.determinant() < e)
+        {
+            cout << "No unique intersection line" << endl;
+            return false; //no intersection
+        }
+
+        Vector3d x = A.colPivHouseholderQr().solve(b);
+        cout << "x: " << x << endl;
+
+        //intersection point
+        Vector3d intersectionPoint(x[0], x[1], x[2]);
+
+    }
+    return true;
+
 }
 
 }
