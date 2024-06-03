@@ -65,12 +65,12 @@ bool ImportFract(const string& filename,
         istringstream convertZ(coord_z);
 
 
-        double minX = 10e5;
-        double maxX = 0;
-        double minY = 10e5;
-        double maxY = 0;
-        double minZ = 10e5;
-        double maxZ = 0;
+        double minX = 10e127;
+        double maxX = -10e127;
+        double minY = 10e127;
+        double maxY = -10e127;
+        double minZ = 10e127;
+        double maxZ = -10e127;
 
         for (unsigned int j = 0; j < numVert; j++)
         {
@@ -172,7 +172,7 @@ bool CalculateIntersection(Fractures& fracture, Traces& traces)
         if (k == size(fracture1))
         {
             cout << "Fracture " << ID1 << " is degenerate";
-            return false;
+            //return false;
         }
 
         k = 2;
@@ -184,7 +184,7 @@ bool CalculateIntersection(Fractures& fracture, Traces& traces)
         if (k == size(fracture2))
         {
             cout << "Fracture " << ID2 << " is degenerate";
-            return false;
+            //return false;
         }
 
         cout << "Norm1: " << norm1 << endl;
@@ -199,7 +199,7 @@ bool CalculateIntersection(Fractures& fracture, Traces& traces)
         if(t.norm() < e)
         {
             cout << "The planes are parallel" << endl;
-            return false; //no intersection
+            //return false; //no intersection
         }
 
         //linear system
@@ -213,17 +213,79 @@ bool CalculateIntersection(Fractures& fracture, Traces& traces)
         if(A.determinant() < e)
         {
             cout << "No unique intersection line" << endl;
-            return false; //no intersection
+            //return false; //no intersection
         }
 
-        Vector3d x = A.colPivHouseholderQr().solve(b);
-        cout << "x: " << x << endl;
-
         //intersection point
-        Vector3d intersectionPoint(x[0], x[1], x[2]);
+        Vector3d intersectionPoint = A.colPivHouseholderQr().solve(b);
+
+
+        //projection fracture on axes        
+        //find the dimension to ignore (ptrMax1, ptrMax2)
+        unsigned int ptrMin1 = 0;
+        unsigned int ptrMin2 = 0;
+        vector<Vector3d> unitvector = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+        double valMin1 = norm1.cross(unitvector[0]).norm();
+        double valMin2 = norm2.cross(unitvector[0]).norm();
+        for (unsigned int j = 1; j < 3; j++)
+        {
+            double tmp = norm1.cross(unitvector[j]).norm();
+            if (tmp < valMin1)
+            {
+                valMin1 = tmp;
+                ptrMin1 = j;
+            }
+            tmp = norm2.cross(unitvector[j]).norm();
+            if (tmp < valMin2)
+            {
+                valMin2 = tmp;
+                ptrMin2 = j;
+            }
+        }
+
+        //create new 2D variables
+        unsigned int index1 = 0;
+        unsigned int index2 = 0;
+        vector<Vector2d> fractProjection1(size(fracture1));
+        vector<Vector2d> fractProjection2(size(fracture2));
+        Vector2d tanProjection1;
+        Vector2d tanProjection2;
+        Vector2d pointProjection1;
+        Vector2d pointProjection2;
+
+
+        for (unsigned int j = 0; j < 3; j++)
+        {
+            if (j!=ptrMin1)
+            {
+                for (unsigned int k=0; k < size(fracture1); k++)
+                    fractProjection1[k][index1] = fracture1[k][j];
+                tanProjection1(index1) = t[j];
+                pointProjection1(index1) = intersectionPoint[j];
+                index1++;
+            }
+            if (j!=ptrMin2)
+            {
+                for (unsigned int k=0; k < size(fracture2); k++)
+                    fractProjection2[k][index2] = fracture2[k][j];
+                tanProjection2(index2) = t[j];
+                pointProjection2(index2) = intersectionPoint[j];
+                index2++;
+            }
+        }
 
     }
     return true;
+
+}
+
+vector<Vector2d> SegmentIntersection(vector<Vector2d> fractProjection1,
+                             vector<Vector2d> fractProjection2,
+                             Vector2d tanProjection1,
+                             Vector2d tanProjection2,
+                             Vector2d pointProjection1,
+                             Vector2d pointProjection2)
+{
 
 }
 
