@@ -48,6 +48,10 @@ add_subdirectory(src)
 list(APPEND DFN_SOURCES ${src_sources})
 list(APPEND DFN_HEADERS ${src_headers})
 list(APPEND DFN_INCLUDE ${src_includes})
+
+list(APPEND sorting_SOURCES ${sorting_sources})
+list(APPEND sorting_HEADERS ${sorting_headers})
+list(APPEND sorting_INCLUDE ${sorting_includes})
 #
 
 # Add file
@@ -59,8 +63,11 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/DFN DESTINATION ${CMAKE_CURRENT_BINARY_DIR
 add_executable(${PROJECT_NAME}
 	main.cpp
 	${DFN_SOURCES}
-    ${DFN_HEADERS})
+    ${DFN_HEADERS}
+    ${sorting_SOURCES}
+    ${sorting_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} ${DFN_LINKED_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${DFN_INCLUDE})
+target_include_directories(${PROJECT_NAME} PRIVATE ${sorting_INCLUDE})
 target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
