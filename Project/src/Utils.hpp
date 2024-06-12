@@ -10,15 +10,28 @@ namespace DFNLibrary{
 bool ImportFract(const string& filename,
                  Fractures& fracture);
 
-void FilterFract(Fractures& fracture);
+bool ExportTraces(Traces& traces);
+
+bool ExportFractTraces(Fractures& fracture);
+
+void FilterFract(Fractures& fracture,
+                 const double& e);
 
 bool CalculateIntersection(Fractures& fracture,
-                           Traces& traces);
-vector<Vector2d> SegmentIntersection(vector<Vector2d> fractProjection1,
-                             vector<Vector2d> fractProjection2,
-                             Vector2d tanProjection1,
-                             Vector2d tanProjection2,
-                             Vector2d pointProjection1,
-                             Vector2d pointProjection2);
+                           Traces& traces,
+                           const double& e);
+
+bool FindIntersection(vector<Vector2d>& tan,
+                      vector<Vector2d>& side,
+                      vector<Vector2d>& intersection,
+                      const double& e);
+
+
+void SegmentIntersection(vector<Vector2d>& fractProjection,
+                         Vector2d& tanProjection,
+                         Vector2d& pointProjection,
+                         const double& e,
+                         vector<Vector2d>& coordIntersection,
+                         Vector2d& parameter);
 
 }
