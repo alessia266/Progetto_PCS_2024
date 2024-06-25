@@ -14,6 +14,8 @@ bool ExportTraces(Traces& traces);
 
 bool ExportFractTraces(Fractures& fracture);
 
+bool ExportPolygonalMesh(Fractures& fracture);
+
 void FilterFract(Fractures& fracture,
                  const double& e);
 
@@ -26,12 +28,20 @@ bool FindIntersection(vector<Vector2d>& tan,
                       vector<Vector2d>& intersection,
                       const double& e);
 
+void ComputeProjection(Fractures& fracture,
+                       unsigned int id,
+                       const double& e);
 
 void SegmentIntersection(vector<Vector2d>& fractProjection,
                          Vector2d& tanProjection,
                          Vector2d& pointProjection,
                          const double& e,
                          vector<Vector2d>& coordIntersection,
-                         Vector2d& parameter);
+                         Vector2d& parameter,
+                         vector<unsigned int>& sideID);
+
+bool CalculateSubPolygons(Fractures& fracture,
+                          Traces& traces,
+                          const double& e);
 
 }
