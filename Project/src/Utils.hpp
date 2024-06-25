@@ -14,6 +14,8 @@ bool ExportTraces(Traces& traces);
 
 bool ExportFractTraces(Fractures& fracture);
 
+bool ExportPolygonalMesh(Fractures& fracture);
+
 void FilterFract(Fractures& fracture,
                  const double& e);
 
@@ -42,6 +44,5 @@ bool CalculateSubPolygons(Fractures& fracture,
                           Traces& traces,
                           const double& e);
 
-bool ExportPolygonalMesh(Fractures& fracture);
 
 }

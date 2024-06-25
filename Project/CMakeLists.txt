@@ -52,6 +52,12 @@ list(APPEND DFN_INCLUDE ${src_includes})
 list(APPEND sorting_SOURCES ${sorting_sources})
 list(APPEND sorting_HEADERS ${sorting_headers})
 list(APPEND sorting_INCLUDE ${sorting_includes})
+
+list(APPEND UCD_SOURCES ${UCD_sources})
+list(APPEND UCD_HEADERS ${UCD_headers})
+list(APPEND UCD_INCLUDE ${UCD_includes})
+
+
 #
 
 # Add file
@@ -68,8 +74,12 @@ add_executable(${PROJECT_NAME}
     ${sorting_HEADERS}
     src/DFN_Test.hpp
 )
+    ${UCD_HEADERS}
+    ${UCD_SOURCES})
+
 
 target_link_libraries(${PROJECT_NAME} ${DFN_LINKED_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${DFN_INCLUDE})
 target_include_directories(${PROJECT_NAME} PRIVATE ${sorting_INCLUDE})
+target_include_directories(${PROJECT_NAME} PRIVATE ${UCD_INCLUDE})
 target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)

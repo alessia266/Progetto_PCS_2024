@@ -617,11 +617,11 @@ bool CalculateSubPolygons(Fractures& fracture,
             if (j != numvert - 1)
             {
                 fracture.Polygons[it->first].IdEdg1D[idEdg] = {idCoord,
-                                                               idCoord + 1};
+                                           idCoord + 1};
             }
             else
                 fracture.Polygons[it->first].IdEdg1D[idEdg] = {idCoord,
-                                                               idCoord - numvert + 1};
+                                           idCoord - numvert + 1};
             idCoord++;
             idEdg++;
 

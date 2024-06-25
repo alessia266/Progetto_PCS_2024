@@ -11,10 +11,11 @@ namespace DFNLibrary{
 
 struct Intersections
 {
-    vector<Vector3d> IntersectionCoord = {};
-    vector<unsigned int> sideId = {};
-    bool Tips;
-    double Length;
+    vector<Vector3d> IntersectionCoord = {}; //coordinates intersections between fracture end trace direction
+    vector<unsigned int> sideId = {}; //marker
+    bool Tips;  //passante/non passante
+    double Length; //trace length
+
 };
 
 struct SortingTraces
@@ -23,6 +24,7 @@ struct SortingTraces
     bool Tips;
     double Length;
 
+    //operator to define the order in type SortingTrace
     friend bool operator>(const SortingTraces& s1, const SortingTraces& s2)
     {
         if (s1.Tips == false && s2.Tips == true) return true;
@@ -30,13 +32,19 @@ struct SortingTraces
         return (s1.Length > s2.Length);
     }
 
+    // friend bool operator<=(const SortingTraces& s1, const SortingTraces& s2)
+    // {
+    //     if (s1.Tips == false && s2.Tips == true) return false;
+    //     if (s1.Tips == true && s2.Tips == false) return true;
+    //     return (s1.Length <= s2.Length);
+    // }
 };
 
 
 struct Utils
 {
-    unsigned int DimToIgnore;
-    Vector3d Norm;
+    unsigned int DimToIgnore;  //dimension to ignore in projection in 2D
+    Vector3d Norm;  //normal vector to the fracture
 };
 
 
@@ -85,3 +93,6 @@ struct Traces
 
 
 }
+
+
+
