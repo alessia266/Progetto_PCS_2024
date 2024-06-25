@@ -1,20 +1,93 @@
 @startuml
 
-package DFNLibrary<<Folder>>
-{
-class Fractures
-{
-+ numberFractures : unsigned int
-+ IDFractures : map<unsigned int, vector<Vector3d>>
-+ void FindTraces()
+namespace DFNLibrary {
+
+struct Intersections {
+    +IntersectionCoord : vector<Vector3d> 
+    +sideId : vector<unsigned int> 
+    +Tips : bool 
+    +Length : double 
 }
 
-class Traces
-{
-+ IDTracesFract : map<unsigned int, Vector2d>
-+ IDTraceCoord : map<unsigned int, vector<Vector3d>>
-+ void ComputeLenght(vector<Vector3d>)
-+ bool Tips(IDTraceCoord, IDTraceFract)
+struct SortingTraces {
+    +TraceID : unsigned int 
+    +Tips : bool 
+    +Length : double 
+
+    + bool operator>(const SortingTraces& s1, const SortingTraces& s2)
+    '+ bool operator<=(const SortingTraces& s1, const SortingTraces& s2)
 }
 
+struct Utils {
+    +DimToIgnore : unsigned int 
+    +Norm : Vector3d 
 }
+struct PolygonalMesh {
+    +NumberCell0D : unsigned int 
+    +IdCoord0D : map<unsigned int, Vector3d>
+    +NumberCell1D : unsigned int 
+    +IdEdg1D : map<unsigned int, Vector2i> 
+    +NumberCell2D : unsigned int 
+    +VerticesCell2D : map<unsigned int, vector<unsigned int>> 
+    +EdgesCell2D : map<unsigned int, vector<unsigned int>> 
+}
+
+struct Fractures {
+    +numberFractures : unsigned int 
+    +IDFracture : map<unsigned int, vector<Vector3d>> 
+    +MinFract : map<unsigned int, Vector3d> 
+    +MaxFract : map<unsigned int, Vector3d> 
+    +IDFracturesComparable : vector<Vector2i> 
+    +UtilsID : map<unsigned int, Utils> 
+    +IntersectionsFracture : map<unsigned int, map<unsigned int, Intersections>> 
+    +FractureSortTraces : map<unsigned int, vector<SortingTraces>> 
+    +Polygons : map<unsigned int, PolygonalMesh> 
+}
+
+struct Traces {
+    +IDTraceFract : map<unsigned int, Vector2i> 
+    +IDTraceCoord : map<unsigned int, vector<Vector3d>> 
+}
+
+'Functions in the DFNLibrary namespace
+class DFNFunction {
+    + bool ImportFract(const string& filename, Fractures& fracture)
+    + bool ExportTraces(Traces& traces)
+    + bool ExportFractTraces(Fractures& fracture)
+    + bool ExportPolygonalMesh(Fractures& fracture)
+    + void FilterFract(Fractures& fracture, const double& e)
+    + bool CalculateIntersection(Fractures& fracture, Traces& traces, const double& e)
+    + bool FindIntersection(vector<Vector2d>& tan, vector<Vector2d>& side, vector<Vector2d>& intersection, const double& e)
+    + void ComputeProjection(Fractures& fracture, unsigned int id, const double& e)
+    + void SegmentIntersection(vector<Vector2d>& fractProjection, Vector2d& tanProjection, Vector2d& pointProjection, const double& e, vector<Vector2d>& coordIntersection, Vector2d& parameter, vector<unsigned int>& sideID)
+    + bool CalculateSubPolygons(Fractures& fracture, Traces& traces, const double& e)
+..TEST..
+ImportFractTest
+CheckNumberTraces
+CheckNumberSubPolygons
+}
+
+Fractures "1" -- "0..*" Intersections : contains >
+Fractures "1" -- "0..*" SortingTraces : contains >
+Fractures "1" -- "0..*" Utils : contains >
+Fractures "1" -- "0..*" PolygonalMesh : contains >
+Traces "1" -- "0..*" Fractures : associates >
+DFNFunction .down.> Fractures : uses >
+DFNFunction .down.> Traces : uses >
+}
+
+package Gedim <<Frame>>
+{
+
+}
+note "This is an external package" as GedimNote
+GedimNote .. Gedim
+
+namespace SortLibrary{
+
+}
+note "This is an external Library" as SortLibraryNote
+SortLibraryNote.. SortLibrary
+DFNFunction::SortLibraryInterface --right--> SortLibrary
+
+@enduml
