@@ -2,12 +2,13 @@
 #include <fstream>
 #include "Utils.hpp"
 #include "DFN.hpp"
+#include "DFN_Test.hpp"
 
 using namespace std;
 using namespace DFNLibrary;
 using namespace Eigen;
 
-int main()
+int main(int argc, char **argv)
 {
 
     //tolerance
@@ -38,12 +39,24 @@ int main()
         return 2;
 
 
-
     if (!ExportTraces(trace))
         return 3;
 
     if (!ExportFractTraces(fracture))
         return 4;
 
+    if (!CalculateSubPolygons(fracture,
+                              trace,
+                              e))
+        return 5;
+
+    if (!ExportPolygonalMesh(fracture))
+        return 6;
+
+
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+
     return 0;
 }
+

@@ -65,7 +65,9 @@ add_executable(${PROJECT_NAME}
 	${DFN_SOURCES}
     ${DFN_HEADERS}
     ${sorting_SOURCES}
-    ${sorting_HEADERS})
+    ${sorting_HEADERS}
+    src/DFN_Test.hpp
+)
 
 target_link_libraries(${PROJECT_NAME} ${DFN_LINKED_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${DFN_INCLUDE})
