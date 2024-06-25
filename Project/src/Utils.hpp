@@ -29,7 +29,7 @@ bool FindIntersection(vector<Vector2d>& tan,
                       const double& e);
 
 void ComputeProjection(Fractures& fracture,
-                       unsigned int id,
+                       unsigned int& id,
                        const double& e);
 
 void SegmentIntersection(vector<Vector2d>& fractProjection,

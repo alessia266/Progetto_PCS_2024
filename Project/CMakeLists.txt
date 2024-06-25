@@ -73,7 +73,6 @@ add_executable(${PROJECT_NAME}
     ${sorting_SOURCES}
     ${sorting_HEADERS}
     src/DFN_Test.hpp
-)
     ${UCD_HEADERS}
     ${UCD_SOURCES})
 

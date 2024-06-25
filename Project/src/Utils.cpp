@@ -136,7 +136,6 @@ void FilterFract(Fractures& fracture,
                 fracture.IDFracturesComparable.push_back({fract1, fract2}); //IDFractures to compare
             }
         }
-
     }
 }
 
@@ -237,9 +236,6 @@ void SegmentIntersection(vector<Vector2d>& fractProjection,
         //if the result of the product is positive the segments do not intersect each others
         product = (tanSegment[0][dep_v] - side[0][dep_v])*(tanSegment[1][dep_v] - side[1][dep_v]);
 
-
-
-
         if (product < -e)
         {
             if (!FindIntersection(tanSegment,
@@ -265,7 +261,7 @@ void SegmentIntersection(vector<Vector2d>& fractProjection,
 }
 
 void ComputeProjection(Fractures& fracture,
-                       unsigned int id,
+                       unsigned int& id,
                        const double& e)
 {
     if (fracture.UtilsID.find(id) == fracture.UtilsID.end())
@@ -287,11 +283,11 @@ void ComputeProjection(Fractures& fracture,
         //projection fracture on axes
         //find the dimension to ignore (ptrMin)
         unsigned int ptrMin = 0;
-        vector<Vector3d> unitvector = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-        double valMin = nor.cross(unitvector[0]).norm();
+        vector<Vector3d> idMatrix = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+        double valMin = nor.cross(idMatrix[0]).norm();
         for (unsigned int j = 1; j < 3; j++)
         {
-            double tmp = nor.cross(unitvector[j]).norm();
+            double tmp = nor.cross(idMatrix[j]).norm();
             if (tmp < valMin)
             {
                 valMin = tmp;

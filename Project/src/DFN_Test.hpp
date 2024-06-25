@@ -74,42 +74,91 @@ TEST(DFNTest, ImportFractTest)
     }
 }
 
-TEST(DFNTest, CheckNumberTraces)
+TEST(DFNTest, FilterFractTest)
 {
-    Fractures fracture;
-    Traces traces;
     const double e = epsilon();
+    Fractures fracture;
+    fracture.numberFractures = 3;
+    fracture.IDFracture[0] = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+    fracture.IDFracture[1] = {{0.8, 0, -0.1}, {0.8, 0, 0.3}, {0.8, 1, 0.3}, {0.8, 1, -0.1}};
+    fracture.IDFracture[2] = {{-0.24, 0.5, -0.34}, {0.31,0.5,-0.34}, {0.31,0.5,0.45}, {-0.24,0.5,0.45}};
+    fracture.MinFract[0] = {0, 0, 0};
+    fracture.MaxFract[0] = {1, 1, 0};
+    fracture.MinFract[1] = {0.8, 0, -0.1};
+    fracture.MaxFract[1] = {0.8, 1, 0.3};
+    fracture.MinFract[2] = {-0.24, 0.5, -0.34};
+    fracture.MaxFract[2] = {0.31, 0.5, 0.45};
+
+    vector<Vector2i> possible = {{0,1}, {0,2}};
+
     FilterFract(fracture, e);
-    CalculateIntersection(fracture, traces, e);
-    int numFilteredFract = fracture.IDFracturesComparable.size();
-    int numTraces = traces.IDTraceFract.size();
-    ASSERT_GE(numFilteredFract, numTraces); // check that the number of possible intersections considered by the first filter is >= to the number of traces
+
+    EXPECT_EQ(fracture.IDFracturesComparable, possible);
 }
 
-TEST(DFNTest, CheckNumberSubPolygons)
+TEST(DFNTest, FindIntersectionTest)
 {
-    Fractures fracture;
     const double e = epsilon();
-    Traces traces;
-    CalculateIntersection(fracture, traces, e);
-    CalculateSubPolygons(fracture, traces, e);
-    ExportPolygonalMesh(fracture);
+    vector<Vector2d> tangente = {{0.8, 0}, {0.8, 1}};
+    vector<Vector2d> side1 = {{0, 0}, {1, 0}};
+    vector<Vector2d> side2 = {{0, 0}, {0, 1}};
+    vector<Vector2d> intersection;
 
-    // Esegui il test per ogni frattura
-    for (map<unsigned int, PolygonalMesh>::iterator it = fracture.Polygons.begin();
-         it != fracture.Polygons.end(); it++)
-    {
-        // Verifica il numero di celle (NumberCell2D) per la frattura attuale
-        unsigned int numCells = fracture.Polygons[it->first].NumberCell2D;
 
-        // Verifica il numero di tracce (IDTraceFract) per la frattura attuale
-        unsigned int numTraces = fracture.FractureSortTraces[it->first].size();
+    EXPECT_TRUE(FindIntersection(tangente, side1, intersection, e));
+    EXPECT_FALSE(FindIntersection(tangente, side2, intersection, e));
+}
 
-        // Verifica che il numero di celle sia maggiore o uguale al numero di tracce + 1
-        ASSERT_GE(numCells, numTraces + 1)<<"Numero celle " << numCells << " numero tracce " << numTraces << endl;
-    }
+TEST(DFNTest, SegmentIntersectionTest)
+{
+    const double e = epsilon();
+    vector<Vector2d> fractProj = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
+    Vector2d tanProj = {0, -0.4};
+    Vector2d pointProj = {0.8, 0};
+    vector<Vector2d> coordIntersection;
+    Vector2d parameter;
+    vector<unsigned int> sideID;
+
+    SegmentIntersection(fractProj, tanProj, pointProj, e, coordIntersection, parameter, sideID);
+
+    Vector2d par1 = {0, -2.5};
+
+    EXPECT_EQ(parameter, par1);
+}
+
+TEST(DFNTest, ComputeProjectionTest)
+{
+    const double e = epsilon();
+    Fractures fracture;
+    unsigned int id = 0;
+    fracture.IDFracture[id] = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+
+    ComputeProjection(fracture, id, e);
+
+    Vector3d norm = {0, 0, 1};
+
+    EXPECT_EQ(fracture.UtilsID[id].Norm, norm);
+    EXPECT_EQ(fracture.UtilsID[id].DimToIgnore, 2);
 }
 
 
+TEST(DFNTest, CalculateIntersectionTest)
+{
+    const double e = epsilon();
+    Fractures fracture;
+    Traces traces;
+    fracture.IDFracturesComparable = {{0,1}, {0,2}};
+    fracture.IDFracture[0] = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+    fracture.IDFracture[1] = {{0.8, 0, -0.1}, {0.8, 0, 0.3}, {0.8, 1, 0.3}, {0.8, 1, -0.1}};
+    fracture.IDFracture[2] = {{-0.24, 0.5, -0.34}, {0.31,0.5,-0.34}, {0.31,0.5,0.45}, {-0.24,0.5,0.45}};
+    fracture.UtilsID[0].Norm = {0,0,1};
+    fracture.UtilsID[1].Norm = {-4, 0, 0};
+    fracture.UtilsID[2].Norm = {0, -0.4, 0};
+    fracture.UtilsID[0].DimToIgnore = 2;
+    fracture.UtilsID[1].DimToIgnore = 0;
+    fracture.UtilsID[2].DimToIgnore = 1;
+
+    EXPECT_TRUE(CalculateIntersection(fracture, traces, e));
+}
 
 #endif // DFN_TEST_H
