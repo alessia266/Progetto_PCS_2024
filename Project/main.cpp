@@ -2,7 +2,9 @@
 #include <fstream>
 #include "Utils.hpp"
 #include "DFN.hpp"
+#include "DFN_Test.hpp"
 #include "UCDUtilities.hpp"
+
 
 
 using namespace std;
@@ -10,7 +12,7 @@ using namespace DFNLibrary;
 using namespace Eigen;
 using namespace Gedim;
 
-int main()
+int main(int argc, char **argv)
 {
 
     //tolerance
@@ -41,7 +43,6 @@ int main()
         return 2;
 
 
-
     if (!ExportTraces(trace))
         return 3;
 
@@ -56,6 +57,10 @@ int main()
     if (!ExportPolygonalMesh(fracture))
         return 6;
 
+
+
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 
     //exporting fractureId 0 in paraview
     auto fracture0 = fracture.Polygons[0];
@@ -91,5 +96,7 @@ int main()
                             point,
                             segments);
 
+
     return 0;
 }
+

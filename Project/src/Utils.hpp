@@ -44,4 +44,5 @@ bool CalculateSubPolygons(Fractures& fracture,
                           Traces& traces,
                           const double& e);
 
+
 }

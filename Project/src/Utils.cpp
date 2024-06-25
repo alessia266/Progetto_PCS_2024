@@ -120,12 +120,12 @@ void FilterFract(Fractures& fracture,
             if (((fracture.MinFract[fract1][0] >= fracture.MinFract[fract2][0] - e
                   && fracture.MinFract[fract1][0] <= fracture.MaxFract[fract2][0] + e)
                  || (fracture.MinFract[fract2][0] >= fracture.MinFract[fract1][0] - e
-                  && fracture.MinFract[fract2][0] <= fracture.MaxFract[fract1][0] + e))
+                     && fracture.MinFract[fract2][0] <= fracture.MaxFract[fract1][0] + e))
                 &&
                 ((fracture.MinFract[fract1][1] >= fracture.MinFract[fract2][1] - e
                   && fracture.MinFract[fract1][1] <= fracture.MaxFract[fract2][1] + e)
                  || (fracture.MinFract[fract2][1] >= fracture.MinFract[fract1][1] - e
-                  && fracture.MinFract[fract2][1] <= fracture.MaxFract[fract1][1] + e))
+                     && fracture.MinFract[fract2][1] <= fracture.MaxFract[fract1][1] + e))
                 &&
                 ((fracture.MinFract[fract1][2] >= fracture.MinFract[fract2][2] - e
                   && fracture.MinFract[fract1][2] <= fracture.MaxFract[fract2][2] + e)
@@ -444,11 +444,11 @@ bool CalculateIntersection(Fractures& fracture,
                             Tips = true;
 
                         Vector3d startIntersection = {intersectionPoint[0] + parFract1[0]*t[0],
-                                    intersectionPoint[1] + parFract1[0]*t[1],
-                                    intersectionPoint[2] + parFract1[0]*t[2]};
+                                                      intersectionPoint[1] + parFract1[0]*t[1],
+                                                      intersectionPoint[2] + parFract1[0]*t[2]};
                         Vector3d endIntersection = {intersectionPoint[0] + parFract1[1]*t[0],
-                                        intersectionPoint[1] + parFract1[1]*t[1],
-                                        intersectionPoint[2] + parFract1[1]*t[2]};
+                                                    intersectionPoint[1] + parFract1[1]*t[1],
+                                                    intersectionPoint[2] + parFract1[1]*t[2]};
 
                         fracture.IntersectionsFracture[ID1].insert({traceID, {{startIntersection, endIntersection}, sideID1, Tips, moduleTrace}});
 
@@ -459,11 +459,11 @@ bool CalculateIntersection(Fractures& fracture,
                             Tips = true;
 
                         startIntersection = {intersectionPoint[0] + parFract2[0]*t[0],
-                                 intersectionPoint[1] + parFract2[0]*t[1],
-                                 intersectionPoint[2] + parFract2[0]*t[2]};
+                                             intersectionPoint[1] + parFract2[0]*t[1],
+                                             intersectionPoint[2] + parFract2[0]*t[2]};
                         endIntersection = {intersectionPoint[0] + parFract2[1]*t[0],
-                               intersectionPoint[1] + parFract2[1]*t[1],
-                               intersectionPoint[2] + parFract2[1]*t[2]};
+                                           intersectionPoint[1] + parFract2[1]*t[1],
+                                           intersectionPoint[2] + parFract2[1]*t[2]};
 
                         fracture.IntersectionsFracture[ID2].insert({traceID, {{startIntersection, endIntersection}, sideID2, Tips, moduleTrace}});
 

@@ -15,6 +15,7 @@ struct Intersections
     vector<unsigned int> sideId = {}; //marker
     bool Tips;  //passante/non passante
     double Length; //trace length
+
 };
 
 struct SortingTraces
@@ -87,6 +88,9 @@ struct Traces
     map<unsigned int, Vector2i> IDTraceFract = {}; //map: {IDTrace, {IDFractures}}
     map<unsigned int, vector<Vector3d>> IDTraceCoord = {}; //map: {IDTrace, {{coordinates of an endpoint}}}
 };
+
+
+
 
 }
 
